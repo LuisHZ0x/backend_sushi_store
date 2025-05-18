@@ -32,3 +32,9 @@ def create_compra():
     db.session.add(new_compra)
     db.session.commit()
     return Compra_schema.jsonify(new_compra)
+
+# Ruta para obtener todas las compras
+@bp_compra.route('/compras', methods=['GET'])
+def get_compras():
+    compras = Compra.query.all()
+    return Compras_schema.jsonify(compras)
