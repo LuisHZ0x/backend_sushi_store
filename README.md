@@ -12,7 +12,6 @@ pip install -r requeriments.txt
 DB_USER='tu usario de base de datos'
 DB_PASSWORD='tu contraseña de la base de datos'
 DB_HOST='el host'
-DB_PORT='el puerto por el que se comunica la base de datos'
 DB_NAME='nombre de la base de datos'
 ~~~
 Esto con el fin de establecer la conexion a la base de datos por medio de
