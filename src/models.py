@@ -42,7 +42,7 @@ class Producto(db.Model):
     precio_venta = db.Column(db.Float, nullable=False)
 
 # Tabla de materia prima en productos
-class Materia_prima_producto(db.Model):
+class Materia_prima_producto(db.Model): #producto_materia segun el MER
     id = db.Column(db.Integer, primary_key=True)
     cantidad = db.Column(db.Float, nullable=False)
     Materia_prima_id = db.Column(db.Integer, db.ForeignKey('materia_prima.id'), nullable=False)
@@ -54,8 +54,8 @@ class Detalles_pedido(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     cantidad = db.Column(db.Integer, nullable=False)
     subtotal = db.Column(db.Float, nullable=False)
-    pedido_id = db.Column(db.Integer, db.ForeignKey('productos.id'), nullable=False)
     pedido_id = db.Column(db.Integer, db.ForeignKey('pedidos.id'), nullable=False)
+    producto_id = db.Column(db.Integer, db.ForeignKey('productos.id'), nullable=False)
 
 # tabla pedidos
 class Pedidos(db.Model):

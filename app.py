@@ -2,7 +2,7 @@ from flask import Flask
 from src.config import SQLALCHEMY_DATABASE_URI, SQLALCHEMY_TRACK_MODIFICATIONS
 from src.models import db
 from src.schemas import ma
-from src.routes import bp_materia_prima, bp_proveedor, bp_compra, bp_producto, bp_pedido
+from src.routes import bp_materia_prima, bp_proveedor, bp_compra, bp_producto, bp_pedido, bp_producto_materia
 
 def create_app():
     app = Flask(__name__)
@@ -20,6 +20,7 @@ def create_app():
     app.register_blueprint(bp_compra)
     app.register_blueprint(bp_producto)
     app.register_blueprint(bp_pedido)
+    app.register_blueprint(bp_producto_materia)
 
     @app.route('/', methods=['GET'])
     def index():

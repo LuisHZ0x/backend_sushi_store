@@ -13,47 +13,61 @@ pedidos_schema = PedidosSchema(many=True)
 @bp_pedido.route('/pedidos', methods=['POST'])
 def create_pedido():
     data = request.get_json()
-    productos = data['productos']  # Espera una lista de dicts: [{'producto_id': 1, 'cantidad': 2}, ...]
+    fecha = datetime.now()
     total = 0
 
-    nuevo_pedido = Pedidos(
-        fecha=datetime.now(),
-        total=0  # Se actualizará después
-    )
+    # Crear un nuevo pedido
+    nuevo_pedido = Pedidos(fecha=fecha, total=total)
     db.session.add(nuevo_pedido)
-    db.session.flush()  # Para obtener el id del pedido
+    db.session.commit()
 
-    for item in productos:
-        producto_id = item['producto_id']
-        cantidad_producto = item['cantidad']
+    # Obtener el ID del nuevo pedido
+    pedido_id = nuevo_pedido.id
+
+    # Procesar los detalles del pedido
+    for detalle in data['detalles']:
+        producto_id = detalle['producto_id']
+        cantidad = detalle['cantidad']
+
+        # Obtener el producto y su precio de venta
         producto = Producto.query.get(producto_id)
         if not producto:
-            db.session.rollback()
-            return jsonify({'error': f'Producto con id {producto_id} no encontrado'}), 404
+            return jsonify({'error': 'Producto no encontrado'}), 404
 
-        subtotal = producto.precio_venta * cantidad_producto
+        subtotal = producto.precio_venta * cantidad
         total += subtotal
 
-        # Crear detalle de pedido
-        detalle = Detalles_pedido(
-            cantidad=cantidad_producto,
-            subtotal=subtotal,
-            pedido_id=nuevo_pedido.id,
-            producto_id=producto_id
-        )
-        db.session.add(detalle)
+        # Crear un nuevo detalle de pedido
+        nuevo_detalle = Detalles_pedido(cantidad=cantidad, subtotal=subtotal, pedido_id=pedido_id, producto_id=producto_id)
+        db.session.add(nuevo_detalle)
 
-        # Descontar materia prima
-        materias_primas = Materia_prima_producto.query.filter_by(Producto_id=producto_id).all()
-        for mp in materias_primas:
-            materia = Materia_prima.query.get(mp.Materia_prima_id)
-            if materia:
-                cantidad_a_descontar = mp.cantidad * cantidad_producto
-                if materia.cantidad < cantidad_a_descontar:
-                    db.session.rollback()
-                    return jsonify({'error': f'No hay suficiente {materia.nombre} para el producto {producto.nombre}'}), 400
-                materia.cantidad -= cantidad_a_descontar
-
+    # Actualizar el total del pedido
     nuevo_pedido.total = total
+    nuevo_pedido.fecha = fecha
     db.session.commit()
-    return pedido_schema.jsonify(nuevo_pedido)
+
+    return pedido_schema.jsonify(nuevo_pedido), 201
+
+# Ruta para obtener los productos de un pedido
+@bp_pedido.route('/pedidos/<int:pedido_id>', methods=['GET'])
+def get_pedido(pedido_id):
+    pedido = Pedidos.query.get(pedido_id)
+    if not pedido:
+        return jsonify({'error': 'Pedido no encontrado'}), 404
+
+    detalles = Detalles_pedido.query.filter_by(pedido_id=pedido_id).all()
+    detalles_data = []
+    for detalle in detalles:
+        producto = Producto.query.get(detalle.producto_id)
+        detalles_data.append({
+            'precio_venta': producto.precio_venta if producto else None,
+            'cantidad': detalle.cantidad,
+            'subtotal': detalle.subtotal,
+            'nombre_producto': producto.nombre if producto else None
+        })
+
+    return jsonify({
+        'fecha': pedido.fecha,
+        'total': pedido.total,
+        'detalles': detalles_data
+    }), 200
