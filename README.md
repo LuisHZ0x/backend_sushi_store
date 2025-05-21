@@ -24,6 +24,6 @@ python app.py
 ~~~
 # IMPORTANTE
 - Solo necesitas crear la base de datos, no las tablas, ya que estas se generan automaticamente con la ejecucion de ***python app.py***
-- Antes de hacer un POST a la tabla 'materia_prima_producto' en la ruta '/descontar_mp' debes hacer un POST en la ruta '/asociar_mp' para que cree la relacion de la materia prima
+- Antes de hacer un **POST** a la tabla ***'materia_prima_producto'*** en la ruta ***'/descontar_mp'*** debes hacer un **POST** en la ruta ***'/asociar_mp'*** para que cree la relacion de la materia prima
 con el producto y a su vez la cantidad de materia prima a descontar
 - Usar **Postman** o cualquier otra herramienta como **Insomnia**, **Hoppscotch**, entre otros, para testear.
