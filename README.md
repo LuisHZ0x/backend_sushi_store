@@ -7,7 +7,7 @@ python3 -m venv .venv
 ~~~
 pip install -r requeriments.txt
 ~~~
-##crea un archivo .env en la raiz del proyecto, estructurado de la siguiente forma
+## crea un archivo .env en la raiz del proyecto, estructurado de la siguiente forma
 ~~~
 DB_USER='tu usario de base de datos'
 DB_PASSWORD='tu contraseña de la base de datos'
@@ -19,7 +19,7 @@ Esto con el fin de establecer la conexion a la base de datos por medio de
 ~~~
 SQLALCHEMY_DATABASE_URI = f'mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}/{DB_NAME}'
 ~~~
-##ejecución del programa
+## ejecución del programa
 ~~~
 python app.py
 ~~~
