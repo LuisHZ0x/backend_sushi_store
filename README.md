@@ -1,7 +1,17 @@
 # GUIA DE USO
 ## Inicia un entorno virtual
+crea el entorno virtual
 ~~~
 python3 -m venv .venv
+~~~
+Entra en el entorno virtual
+**windows**
+~~~
+.venv\Scripts\activate
+~~~
+**Linux**
+~~~
+. .venv/bin/activate
 ~~~
 ## Instala los paquetes necesarios
 ~~~
